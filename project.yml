@@ -61,7 +61,6 @@ schemes:
   GBAWatch:
     build:
       targets:
-        WatchContainer: all
         WatchApp: all
         WatchExtension: all
     run:
