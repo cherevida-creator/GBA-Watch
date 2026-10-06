@@ -1,10 +1,10 @@
 # GBA Watch
 
-Emulador nativo de Game Boy Advance para Apple Watch. El prototipo permite importar archivos .gba, muestra una pantalla con proporción GBA e incluye controles táctiles y pausa.
+Emulador nativo de Game Boy Advance para Apple Watch. La interfaz inicial incluye una pantalla con proporción GBA, controles táctiles y pausa.
 
 ## Estado
 
-La interfaz y la importación de ROM están implementadas. Aún falta integrar el núcleo de emulación: por ahora no se ejecutan juegos ni se generan imagen, audio o partidas guardadas. El siguiente paso es conectar un core compatible con watchOS a los botones, la pantalla de 240 × 160 y los archivos de guardado.
+La interfaz está implementada. watchOS no ofrece el selector de archivos del iPhone, así que la transferencia de ROM desde el iPhone sigue pendiente. Tampoco se ejecutan juegos ni se generan imagen, audio o partidas guardadas; falta integrar un núcleo compatible con watchOS y conectarlo a los botones y a la pantalla de 240 × 160.
 
 No se incluyen BIOS ni juegos. Importa únicamente ROMs que tengas derecho a usar.
 
