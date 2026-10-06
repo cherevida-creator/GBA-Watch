@@ -1,9 +1,7 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct ContentView: View {
     @EnvironmentObject private var library: GameLibrary
-    @State private var showingImporter = false
     @State private var showingMenu = false
     @State private var isPaused = false
     @State private var pressedButtons: Set<String> = []
@@ -21,11 +19,12 @@ struct ContentView: View {
                 }
 
                 if library.gameURL == nil {
-                    Button { showingImporter = true } label: {
-                        Label("Cargar juego", systemImage: "square.and.arrow.down")
-                            .font(.system(size: 12, weight: .semibold))
+                    VStack(spacing: 3) {
+                        Label("ROM desde iPhone", systemImage: "iphone")
+                            .font(.system(size: 10, weight: .semibold))
+                        Text("Transferencia pendiente")
+                            .font(.system(size: 8)).foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.borderedProminent)
                 } else {
                     controls
                     Button { showingMenu = true } label: {
@@ -38,18 +37,8 @@ struct ContentView: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 4)
         }
-        .fileImporter(isPresented: $showingImporter,
-                      allowedContentTypes: [UTType(filenameExtension: "gba") ?? .data],
-                      allowsMultipleSelection: false) { result in
-            if case .success(let urls) = result, let url = urls.first {
-                library.importGame(from: url)
-            } else if case .failure(let error) = result {
-                library.importError = error.localizedDescription
-            }
-        }
         .confirmationDialog("Opciones", isPresented: $showingMenu, titleVisibility: .visible) {
             Button(isPaused ? "Reanudar" : "Pausar") { isPaused.toggle() }
-            Button("Elegir otro juego") { showingImporter = true }
             Button("Cancelar", role: .cancel) { }
         }
     }
@@ -66,7 +55,11 @@ struct ContentView: View {
         HStack(spacing: 9) {
             VStack(spacing: 3) {
                 padButton("▲", name: "up")
-                HStack(spacing: 3) { padButton("◀", name: "left"); padButton("●", name: "center", enabled: false); padButton("▶", name: "right") }
+                HStack(spacing: 3) {
+                    padButton("◀", name: "left")
+                    padButton("●", name: "center", enabled: false)
+                    padButton("▶", name: "right")
+                }
                 padButton("▼", name: "down")
             }
             Spacer(minLength: 0)
@@ -102,11 +95,6 @@ struct ContentView: View {
         .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in press(name) }.onEnded { _ in release(name) })
     }
 
-    private func press(_ name: String) {
-        pressedButtons.insert(name)
-    }
-
-    private func release(_ name: String) {
-        pressedButtons.remove(name)
-    }
+    private func press(_ name: String) { pressedButtons.insert(name) }
+    private func release(_ name: String) { pressedButtons.remove(name) }
 }
