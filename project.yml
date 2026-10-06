@@ -28,7 +28,7 @@ targets:
           NSExtensionPointIdentifier: com.apple.watchkit
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.extension
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.app.extension
         TARGETED_DEVICE_FAMILY: "4"
   WatchApp:
     type: application.watchapp2
