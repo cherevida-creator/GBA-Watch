@@ -1,0 +1,68 @@
+name: GBAWatch
+options:
+  deploymentTarget:
+    watchOS: "10.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+targets:
+  WatchExtension:
+    type: watchkit2-extension
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: GBAWatch
+        excludes:
+          - Info.plist
+    info:
+      path: GBAWatch/Info.plist
+      properties:
+        CFBundleDisplayName: GBA Watch
+        WKWatchOnly: true
+        NSExtension:
+          NSExtensionAttributes:
+            WKAppBundleIdentifier: com.beich.GBAWatch.app
+          NSExtensionPointIdentifier: com.apple.watchkit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.extension
+        TARGETED_DEVICE_FAMILY: "4"
+  WatchApp:
+    type: application.watchapp2
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources: []
+    dependencies:
+      - target: WatchExtension
+    info:
+      path: GBAWatchApp/Info.plist
+      properties:
+        CFBundleDisplayName: GBA Watch
+        WKWatchKitApp: true
+        WKWatchOnly: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.app
+        TARGETED_DEVICE_FAMILY: "4"
+  WatchContainer:
+    type: application.watchapp2-container
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources: []
+    dependencies:
+      - target: WatchApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch
+schemes:
+  GBAWatch:
+    build:
+      targets:
+        WatchContainer: all
+        WatchApp: all
+        WatchExtension: all
+    run:
+      config: Debug
