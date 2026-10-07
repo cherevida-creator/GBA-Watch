@@ -21,14 +21,13 @@ targets:
       path: GBAWatch/Info.plist
       properties:
         CFBundleDisplayName: GBA Watch
-        WKWatchOnly: true
         NSExtension:
           NSExtensionAttributes:
-            WKAppBundleIdentifier: com.beich.GBAWatch.app
+            WKAppBundleIdentifier: com.beich.GBAWatch.ios.watchkitapp
           NSExtensionPointIdentifier: com.apple.watchkit
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.app.extension
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.ios.watchkitapp.watchkitextension
         TARGETED_DEVICE_FAMILY: "4"
   WatchApp:
     type: application.watchapp2
@@ -42,22 +41,11 @@ targets:
       properties:
         CFBundleDisplayName: GBA Watch
         WKWatchKitApp: true
-        WKWatchOnly: true
         WKCompanionAppBundleIdentifier: com.beich.GBAWatch.ios
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.ios.watchkitapp
         TARGETED_DEVICE_FAMILY: "4"
-  WatchContainer:
-    type: application.watchapp2-container
-    platform: watchOS
-    deploymentTarget: "10.0"
-    sources: []
-    dependencies:
-      - target: WatchApp
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch
   GBACompanion:
     type: application
     platform: iOS
@@ -66,6 +54,9 @@ targets:
       - path: GBACompanion
         excludes:
           - Info.plist
+    dependencies:
+      - target: WatchApp
+        embed: true
     info:
       path: GBACompanion/Info.plist
       properties:
