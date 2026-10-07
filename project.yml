@@ -8,6 +8,10 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
+packages:
+  mGBAEclipseCore:
+    url: https://github.com/EclipseEmu/core-mgba.git
+    branch: main
 targets:
   WatchExtension:
     type: watchkit2-extension
@@ -17,6 +21,9 @@ targets:
       - path: GBAWatch
         excludes:
           - Info.plist
+    dependencies:
+      - package: mGBAEclipseCore
+        product: mGBAEclipseCore
     info:
       path: GBAWatch/Info.plist
       properties:
