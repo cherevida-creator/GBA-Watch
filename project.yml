@@ -43,6 +43,7 @@ targets:
         CFBundleDisplayName: GBA Watch
         WKWatchKitApp: true
         WKWatchOnly: true
+        WKCompanionAppBundleIdentifier: com.beich.GBAWatch.ios
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.app
@@ -57,11 +58,30 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch
+  GBACompanion:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GBACompanion
+    info:
+      properties:
+        CFBundleDisplayName: GBA Watch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.beich.GBAWatch.ios
+        TARGETED_DEVICE_FAMILY: "1"
 schemes:
   GBAWatch:
     build:
       targets:
         WatchApp: all
         WatchExtension: all
+    run:
+      config: Debug
+  GBACompanion:
+    build:
+      targets:
+        GBACompanion: all
     run:
       config: Debug
