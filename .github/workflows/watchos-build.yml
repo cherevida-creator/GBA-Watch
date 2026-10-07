@@ -19,6 +19,7 @@ jobs:
           -project GBAWatch.xcodeproj
           -scheme GBAWatch
           -destination 'generic/platform=watchOS Simulator'
+          -derivedDataPath build
           CODE_SIGNING_ALLOWED=NO
           build
       - name: Build iPhone companion
@@ -27,5 +28,15 @@ jobs:
           -project GBAWatch.xcodeproj
           -scheme GBACompanion
           -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath build
           CODE_SIGNING_ALLOWED=NO
           build
+      - name: Upload simulator apps
+        uses: actions/upload-artifact@v4
+        with:
+          name: gba-watch-simulator-build
+          path: |
+            build/Build/Products/Debug-watchsimulator/GBAWatch.app
+            build/Build/Products/Debug-iphonesimulator/GBACompanion.app
+          if-no-files-found: error
+          retention-days: 14
