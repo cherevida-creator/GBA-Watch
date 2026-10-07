@@ -9,8 +9,8 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
 packages:
-  mGBAEclipseCore:
-    url: https://github.com/EclipseEmu/core-mgba.git
+  mGBAWatchCore:
+    url: https://github.com/cherevida-creator/core-mgba-watchos.git
     branch: main
 targets:
   WatchExtension:
@@ -22,8 +22,8 @@ targets:
         excludes:
           - Info.plist
     dependencies:
-      - package: mGBAEclipseCore
-        product: mGBAEclipseCore
+      - package: mGBAWatchCore
+        product: mGBAWatchCore
     info:
       path: GBAWatch/Info.plist
       properties:
