@@ -1,4 +1,4 @@
-name: watchOS build
+name: Apple platform builds
 
 on:
   push:
@@ -13,11 +13,19 @@ jobs:
         run: brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
-      - name: Build for Apple Watch Simulator
+      - name: Build Apple Watch app
         run: >-
           xcodebuild
           -project GBAWatch.xcodeproj
           -scheme GBAWatch
           -destination 'generic/platform=watchOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
+      - name: Build iPhone companion
+        run: >-
+          xcodebuild
+          -project GBAWatch.xcodeproj
+          -scheme GBACompanion
+          -destination 'generic/platform=iOS Simulator'
           CODE_SIGNING_ALLOWED=NO
           build
