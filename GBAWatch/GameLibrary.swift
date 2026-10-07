@@ -5,6 +5,7 @@ import WatchConnectivity
 @MainActor
 final class GameLibrary: NSObject, ObservableObject, WCSessionDelegate {
     @Published private(set) var gameURL: URL?
+    @Published private(set) var games: [URL] = []
     @Published var importError: String?
     @Published private(set) var transferMessage = "Abre GBA Watch en el iPhone para enviar una ROM."
 
@@ -12,7 +13,7 @@ final class GameLibrary: NSObject, ObservableObject, WCSessionDelegate {
 
     override init() {
         super.init()
-        loadLatestSavedROM()
+        loadSavedROMs()
         guard WCSession.isSupported() else {
             transferMessage = "WatchConnectivity no está disponible."
             return
@@ -50,7 +51,7 @@ final class GameLibrary: NSObject, ObservableObject, WCSessionDelegate {
             }
             try FileManager.default.copyItem(at: sourceURL, to: destination)
             DispatchQueue.main.async {
-                self.gameURL = destination
+                self.loadSavedROMs(preferred: destination)
                 self.importError = nil
                 self.transferMessage = "ROM lista: \(safeName)"
             }
@@ -61,19 +62,28 @@ final class GameLibrary: NSObject, ObservableObject, WCSessionDelegate {
         }
     }
 
-    private func loadLatestSavedROM() {
+    func selectGame(_ game: URL) {
+        guard games.contains(game) else { return }
+        gameURL = game
+    }
+
+    private func loadSavedROMs(preferred: URL? = nil) {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let folder = documents.appendingPathComponent(folderName, isDirectory: true)
         guard let files = try? FileManager.default.contentsOfDirectory(
             at: folder, includingPropertiesForKeys: [.contentModificationDateKey]
-        ) else { return }
-        gameURL = files
+        ) else {
+            games = []
+            gameURL = nil
+            return
+        }
+        games = files
             .filter { $0.pathExtension.lowercased() == "gba" }
             .sorted {
                 let lhs = (try? $0.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
                 let rhs = (try? $1.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
                 return lhs > rhs
             }
-            .first
+        gameURL = preferred.flatMap { games.contains($0) ? $0 : nil } ?? games.first
     }
 }
