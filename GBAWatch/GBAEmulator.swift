@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreFoundation
 import mGBA
 
 @MainActor
@@ -35,7 +36,7 @@ final class GBAEmulator: ObservableObject {
         }
 
         let buffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: width * height * 4)
-        buffer.initialize(repeating: 0, count: buffer.count)
+        buffer.initialize(repeating: 0)
         pixels = buffer
         buffer.withMemoryRebound(to: color_t.self) { colors in
             core.pointee.setVideoBuffer(core, colors.baseAddress, width)
@@ -107,7 +108,7 @@ final class GBAEmulator: ObservableObject {
 
     private func publishFrame() {
         guard let pixels,
-              let provider = CGDataProvider(data: Data(bytes: pixels.baseAddress!, count: pixels.count)) else { return }
+              let provider = CGDataProvider(data: Data(bytes: pixels.baseAddress!, count: pixels.count) as CFData) else { return }
         frameImage = CGImage(
             width: width, height: height,
             bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
