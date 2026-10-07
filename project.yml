@@ -64,7 +64,10 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: GBACompanion
+        excludes:
+          - Info.plist
     info:
+      path: GBACompanion/Info.plist
       properties:
         CFBundleDisplayName: GBA Watch
     settings:
