@@ -25,22 +25,6 @@ struct ContentView: View {
                         Text(library.transferMessage).font(.system(size: 8)).foregroundStyle(.secondary).multilineTextAlignment(.center)
                     }
                 } else {
-                    Menu {
-                        ForEach(library.games, id: \.path) { game in
-                            Button {
-                                library.selectGame(game)
-                            } label: {
-                                Label(
-                                    game.deletingPathExtension().lastPathComponent,
-                                    systemImage: game == library.gameURL ? "checkmark.circle.fill" : "gamecontroller"
-                                )
-                            }
-                        }
-                    } label: {
-                        Label("Juegos (\(library.games.count))", systemImage: "square.stack.3d.up")
-                            .font(.system(size: 10, weight: .medium))
-                    }
-                    .buttonStyle(.bordered)
                     HStack {
                         VStack(spacing: 3) {
                             button("▲", "up")
@@ -51,14 +35,18 @@ struct ContentView: View {
                         HStack(spacing: 6) { button("B", "B"); button("A", "A") }
                     }
                     Button { showingMenu = true } label: {
-                        Label(isPaused ? "Reanudar" : "Pausa y opciones", systemImage: "pause.fill")
+                        Label("Juegos y pausa (\(library.games.count))", systemImage: "square.stack.3d.up")
                             .font(.system(size: 11, weight: .medium))
                     }.buttonStyle(.bordered)
                 }
             }
             .padding(.horizontal, 6).padding(.vertical, 4)
         }
-        .confirmationDialog("Opciones", isPresented: $showingMenu, titleVisibility: .visible) {
+        .confirmationDialog("Juegos y opciones", isPresented: $showingMenu, titleVisibility: .visible) {
+            ForEach(library.games, id: \.path) { game in
+                let name = game.deletingPathExtension().lastPathComponent
+                Button((game == library.gameURL ? "✓ " : "") + name) { library.selectGame(game) }
+            }
             Button(isPaused ? "Reanudar" : "Pausar") { isPaused.toggle() }
             Button("Cancelar", role: .cancel) { }
         }
