@@ -1,23 +1,24 @@
 # GBA Watch
 
-Emulador nativo de Game Boy Advance para Apple Watch. La interfaz inicial incluye una pantalla con proporción GBA, controles táctiles y pausa.
+Emulador de Game Boy Advance para Apple Watch, con una app compañera de iPhone para importar ROMs propias.
 
 ## Estado
 
-La interfaz está implementada. watchOS no ofrece el selector de archivos del iPhone, así que la transferencia de ROM desde el iPhone sigue pendiente. Tampoco se ejecutan juegos ni se generan imagen, audio o partidas guardadas; falta integrar un núcleo compatible con watchOS y conectarlo a los botones y a la pantalla de 240 × 160.
+La app de iPhone permite elegir archivos .gba desde Archivos y enviarlos al Watch por WatchConnectivity. El reloj guarda la ROM localmente y la vuelve a seleccionar al abrir la app.
 
-No se incluyen BIOS ni juegos. Importa únicamente ROMs que tengas derecho a usar.
+La interfaz y los controles táctiles del Watch están preparados, pero todavía no ejecutan juegos ni producen imagen, audio o partidas guardadas. La siguiente fase es integrar un núcleo compatible con watchOS y conectar sus entradas y salida gráfica.
 
-## Generar y compilar
+No se incluyen BIOS ni juegos. Las ROMs se conservan en el iPhone y el Watch; no se envían a servidores. Importa únicamente archivos que tengas derecho a usar.
 
-Se necesita Xcode en macOS y XcodeGen. Desde la raíz del repositorio:
+## Compilar online
+
+GitHub Actions usa XcodeGen para compilar ambas apps en simuladores en cada push y pull request. Desde macOS también se puede ejecutar:
 
 ```sh
 brew install xcodegen
 xcodegen generate
-xcodebuild -project GBAWatch.xcodeproj -scheme GBAWatch \
-  -destination 'generic/platform=watchOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project GBAWatch.xcodeproj -scheme GBAWatch -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO build
+xcodebuild -project GBAWatch.xcodeproj -scheme GBACompanion -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 ```
 
-GitHub Actions ejecuta esa compilación para Apple Watch Simulator en cada push y pull request.
+La transferencia real requiere un iPhone y un Apple Watch emparejados con GBA Watch instalado.
