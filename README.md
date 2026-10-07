@@ -4,7 +4,7 @@ Emulador de Game Boy Advance para Apple Watch, con una app compañera de iPhone 
 
 ## Estado
 
-La app de iPhone permite elegir archivos .gba desde Archivos y enviarlos al Watch por WatchConnectivity. El reloj guarda la ROM localmente y la vuelve a seleccionar al abrir la app.
+La app de iPhone permite elegir archivos .gba desde Archivos y enviarlos al Watch por WatchConnectivity. El reloj guarda las ROMs recibidas en una biblioteca local, abre la más reciente y permite cambiar entre juegos desde el menú «Juegos».
 
 La interfaz y los controles táctiles del Watch están preparados, pero todavía no ejecutan juegos ni producen imagen, audio o partidas guardadas. La siguiente fase es integrar un núcleo compatible con watchOS y conectar sus entradas y salida gráfica.
 
