@@ -25,6 +25,22 @@ struct ContentView: View {
                         Text(library.transferMessage).font(.system(size: 8)).foregroundStyle(.secondary).multilineTextAlignment(.center)
                     }
                 } else {
+                    Menu {
+                        ForEach(library.games, id: \.path) { game in
+                            Button {
+                                library.selectGame(game)
+                            } label: {
+                                Label(
+                                    game.deletingPathExtension().lastPathComponent,
+                                    systemImage: game == library.gameURL ? "checkmark.circle.fill" : "gamecontroller"
+                                )
+                            }
+                        }
+                    } label: {
+                        Label("Juegos (\(library.games.count))", systemImage: "square.stack.3d.up")
+                            .font(.system(size: 10, weight: .medium))
+                    }
+                    .buttonStyle(.bordered)
                     HStack {
                         VStack(spacing: 3) {
                             button("▲", "up")
