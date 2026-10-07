@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var library: GameLibrary
+    @StateObject private var emulator = GBAEmulator()
     @State private var showingMenu = false
     @State private var isPaused = false
     @State private var pressed: Set<String> = []
@@ -14,9 +15,10 @@ struct ContentView: View {
                     Spacer()
                     Circle().fill(library.gameURL == nil ? .gray : .green).frame(width: 6, height: 6)
                 }
-                GameScreenView(gameName: library.gameURL?.deletingPathExtension().lastPathComponent, isPaused: isPaused)
+                GameScreenView(gameName: library.gameURL?.deletingPathExtension().lastPathComponent,
+                               isPaused: isPaused, frameImage: emulator.frameImage)
                     .aspectRatio(3 / 2, contentMode: .fit)
-                if let error = library.importError {
+                if let error = library.importError ?? emulator.errorMessage {
                     Text(error).font(.system(size: 10)).foregroundStyle(.red).multilineTextAlignment(.center)
                 }
                 if library.gameURL == nil {
@@ -32,7 +34,13 @@ struct ContentView: View {
                             button("▼", "down")
                         }
                         Spacer()
-                        HStack(spacing: 6) { button("B", "B"); button("A", "A") }
+                        HStack(spacing: 5) {
+                            button("L", "L"); button("B", "B"); button("A", "A"); button("R", "R")
+                        }
+                    }
+                    HStack(spacing: 8) {
+                        button("SELECT", "Select")
+                        button("START", "Start")
                     }
                     Button { showingMenu = true } label: {
                         Label("Juegos y pausa (\(library.games.count))", systemImage: "square.stack.3d.up")
@@ -41,6 +49,18 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal, 6).padding(.vertical, 4)
+        }
+        .onChange(of: library.gameURL) { _, newURL in
+            if let newURL {
+                isPaused = false
+                emulator.start(romURL: newURL)
+            } else {
+                emulator.stop()
+            }
+        }
+        .onChange(of: isPaused) { _, paused in emulator.setPaused(paused) }
+        .onAppear {
+            if let url = library.gameURL { emulator.start(romURL: url) }
         }
         .confirmationDialog("Juegos y opciones", isPresented: $showingMenu, titleVisibility: .visible) {
             ForEach(library.games, id: \.path) { game in
@@ -53,10 +73,19 @@ struct ContentView: View {
     }
 
     private func button(_ title: String, _ key: String) -> some View {
-        Text(title).font(.system(size: 12, weight: .bold))
-            .frame(width: 28, height: 22)
+        Text(title).font(.system(size: title.count > 1 ? 7 : 12, weight: .bold))
+            .frame(minWidth: title.count > 1 ? 38 : 25, minHeight: 22)
+            .padding(.horizontal, title.count > 1 ? 3 : 0)
             .background(pressed.contains(key) ? Color.green.opacity(0.65) : Color.gray.opacity(0.25))
             .clipShape(RoundedRectangle(cornerRadius: 6))
-            .gesture(DragGesture(minimumDistance: 0).onChanged { _ in pressed.insert(key) }.onEnded { _ in pressed.remove(key) })
+            .gesture(DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    guard pressed.insert(key).inserted else { return }
+                    emulator.setButton(key, pressed: true)
+                }
+                .onEnded { _ in
+                    pressed.remove(key)
+                    emulator.setButton(key, pressed: false)
+                })
     }
 }
